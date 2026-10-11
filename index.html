@@ -19,9 +19,7 @@
   .container {
     max-width: 500px;
     margin: 0 auto;
-    background: #999;
     padding: 20px;
-    border: 2px solid #555;
   }
   #clickBtn {
     display: block;
@@ -192,6 +190,45 @@
   const clickBtn = document.getElementById('clickBtn');
   const toast = document.getElementById('toast');
 
+  // Аудио через Web Audio API — никаких внешних файлов не надо
+  let audioCtx = null;
+  function playClickSound() {
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.06);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.08);
+    } catch (e) {}
+  }
+
+  function playErrorSound() {
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.15);
+    } catch (e) {}
+  }
+
   function showToast(text) {
     toast.textContent = text;
     toast.classList.add('show');
@@ -202,13 +239,18 @@
   function checkAutoclicker() {
     const now = Date.now();
     if (now - lastClick < 50) {
+      playErrorSound();
       showToast('ваня я сделал защиту от автокликера');
+      lastClick = now;
+      return false;
     }
     lastClick = now;
+    return true;
   }
 
   clickBtn.addEventListener('click', () => {
-    checkAutoclicker();
+    if (!checkAutoclicker()) return;
+    playClickSound();
     score += perClick;
     update();
   });
@@ -228,6 +270,7 @@
       score -= 10;
       perClick += 1;
       up1++;
+      playClickSound();
       update();
     }
   };
@@ -236,6 +279,7 @@
       score -= 100;
       perClick += 5;
       up2++;
+      playClickSound();
       update();
     }
   };
@@ -244,6 +288,7 @@
       score -= 1000;
       perClick += 25;
       up3++;
+      playClickSound();
       update();
     }
   };
