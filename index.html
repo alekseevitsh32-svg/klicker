@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Кликер</title>
+<style>
+  body {
+    background: #808080;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    color: #000;
+    user-select: none;
+  }
+  h1 {
+    text-align: center;
+    font-size: 24px;
+  }
+  .container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #999;
+    padding: 20px;
+    border: 2px solid #555;
+  }
+  #clickBtn {
+    display: block;
+    width: 200px;
+    height: 200px;
+    margin: 20px auto;
+    font-size: 20px;
+    background: #ccc;
+    border: 3px solid #333;
+    cursor: pointer;
+  }
+  #clickBtn:active {
+    background: #aaa;
+  }
+  #score {
+    text-align: center;
+    font-size: 22px;
+    margin: 10px 0;
+  }
+  .shop {
+    margin-top: 20px;
+    border-top: 2px solid #555;
+    padding-top: 10px;
+  }
+  .shop h2 {
+    font-size: 18px;
+    margin: 5px 0;
+  }
+  .upgrade {
+    background: #bbb;
+    border: 2px solid #555;
+    padding: 8px;
+    margin: 6px 0;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .upgrade:hover {
+    background: #aaa;
+  }
+  .upgrade.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .tabs {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .tab {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #bbb;
+    border: 2px solid #555;
+    cursor: pointer;
+    margin: 0 4px 4px 4px;
+    font-size: 14px;
+  }
+  .tab.active {
+    background: #ddd;
+    font-weight: bold;
+  }
+  .page {
+    display: none;
+  }
+  .page.active {
+    display: block;
+  }
+  #chatBox {
+    background: #ddd;
+    border: 2px solid #555;
+    height: 200px;
+    overflow-y: auto;
+    padding: 8px;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  #chatInput {
+    width: 70%;
+    padding: 8px;
+    border: 2px solid #555;
+    font-size: 14px;
+  }
+  #sendBtn {
+    padding: 8px 14px;
+    border: 2px solid #555;
+    background: #ccc;
+    cursor: pointer;
+  }
+  #toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #333;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 15px;
+    opacity: 0;
+    transition: all 0.4s;
+    z-index: 999;
+  }
+  #toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  .update-text {
+    background: #bbb;
+    border: 2px solid #555;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="tabs">
+    <div class="tab active" data-tab="clicker">Кликер</div>
+    <div class="tab" data-tab="ai">ИИ фри 24 часа</div>
+    <div class="tab" data-tab="update">Обновление</div>
+  </div>
+
+  <!-- КЛИКЕР -->
+  <div class="page active" id="page-clicker">
+    <h1>Кликер</h1>
+    <div id="score">Счёт: 0</div>
+    <button id="clickBtn">КЛИК</button>
+
+    <div class="shop">
+      <h2>Магазин</h2>
+      <div class="upgrade" id="up1">Улучшение 1: +1 за клик (цена: 10)</div>
+      <div class="upgrade" id="up2">Улучшение 2: +5 за клик (цена: 100)</div>
+      <div class="upgrade" id="up3">Улучшение 3: +25 за клик (цена: 1000)</div>
+    </div>
+  </div>
+
+  <!-- ИИ -->
+  <div class="page" id="page-ai">
+    <h1>ИИ фри 24 часа</h1>
+    <div id="chatBox"></div>
+    <input id="chatInput" placeholder="веди че нибудь">
+    <button id="sendBtn">Отправить</button>
+  </div>
+
+  <!-- ОБНОВЛЕНИЕ -->
+  <div class="page" id="page-update">
+    <h1>Обновление</h1>
+    <div class="update-text">
+      zuper team сделали эту фигню 11.10.2026 холодно на улице
+    </div>
+    <div class="update-text">
+      подписывайтесь на нд хакеров
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  let score = 0;
+  let perClick = 1;
+  let up1 = 0, up2 = 0, up3 = 0;
+  let lastClick = 0;
+
+  const scoreEl = document.getElementById('score');
+  const clickBtn = document.getElementById('clickBtn');
+  const toast = document.getElementById('toast');
+
+  function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // Защита от автокликера
+  function checkAutoclicker() {
+    const now = Date.now();
+    if (now - lastClick < 50) {
+      showToast('ваня я сделал защиту от автокликера');
+    }
+    lastClick = now;
+  }
+
+  clickBtn.addEventListener('click', () => {
+    checkAutoclicker();
+    score += perClick;
+    update();
+  });
+
+  function update() {
+    scoreEl.textContent = 'Счёт: ' + score;
+    document.getElementById('up1').classList.toggle('disabled', score < 10);
+    document.getElementById('up2').classList.toggle('disabled', score < 100);
+    document.getElementById('up3').classList.toggle('disabled', score < 1000);
+    document.getElementById('up1').textContent = `Улучшение 1: +1 за клик (куплено: ${up1}, цена: 10)`;
+    document.getElementById('up2').textContent = `Улучшение 2: +5 за клик (куплено: ${up2}, цена: 100)`;
+    document.getElementById('up3').textContent = `Улучшение 3: +25 за клик (куплено: ${up3}, цена: 1000)`;
+  }
+
+  document.getElementById('up1').onclick = () => {
+    if (score >= 10) {
+      score -= 10;
+      perClick += 1;
+      up1++;
+      update();
+    }
+  };
+  document.getElementById('up2').onclick = () => {
+    if (score >= 100) {
+      score -= 100;
+      perClick += 5;
+      up2++;
+      update();
+    }
+  };
+  document.getElementById('up3').onclick = () => {
+    if (score >= 1000) {
+      score -= 1000;
+      perClick += 25;
+      up3++;
+      update();
+    }
+  };
+
+  // Вкладки
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.onclick = () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('page-' + tab.dataset.tab).classList.add('active');
+    };
+  });
+
+  // ИИ
+  const chatBox = document.getElementById('chatBox');
+  const chatInput = document.getElementById('chatInput');
+
+  document.getElementById('sendBtn').onclick = () => {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    chatBox.innerHTML += `<div><b>Ты:</b> ${text}</div>`;
+    chatInput.value = '';
+
+    let reply = 'я нихуя не знаю иди нафиг';
+    if (text.toLowerCase() === 'привет') {
+      reply = 'я нихуя не знаю иди нафиг';
+    }
+
+    setTimeout(() => {
+      chatBox.innerHTML += `<div><b>ИИ:</b> ${reply}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+      showToast('иди нафиг');
+    }, 500);
+  };
+
+  chatInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('sendBtn').click();
+  });
+
+  // Каждые 5 секунд уведомление
+  setInterval(() => {
+    showToast('ваня я сделал защиту от автокликера');
+  }, 5000);
+
+  update();
+</script>
+
+</body>
+</html>
