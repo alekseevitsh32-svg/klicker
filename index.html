@@ -2,83 +2,123 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Кликер</title>
+<title>КЛИКЕР СУПЕР</title>
 <style>
   body {
     background: #808080;
-    font-family: Arial, sans-serif;
+    font-family: "Comic Sans MS", "Times New Roman", cursive;
     margin: 0;
-    padding: 20px;
+    padding: 8px;
     color: #000;
     user-select: none;
+    font-size: 15px;
   }
   h1 {
-    text-align: center;
-    font-size: 24px;
+    text-align: left;
+    font-size: 26px;
+    font-family: "Impact", "Arial Black", sans-serif;
+    color: #000080;
+    text-shadow: 2px 2px 0 #ffff00;
+    margin: 4px 0 4px 8px;
+    letter-spacing: 1px;
   }
   .container {
-    max-width: 500px;
+    max-width: 520px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 6px;
   }
   #clickBtn {
     display: block;
-    width: 200px;
-    height: 200px;
-    margin: 20px auto;
-    font-size: 20px;
-    background: #ccc;
-    border: 3px solid #333;
+    width: 173px;
+    height: 91px;
+    margin: 7px 0 7px 23px;
+    font-size: 21px;
+    font-family: "Comic Sans MS", cursive;
+    background: #c0c0c0;
+    border-top: 4px solid #fff;
+    border-left: 4px solid #fff;
+    border-right: 4px solid #404040;
+    border-bottom: 4px solid #404040;
     cursor: pointer;
+    color: #800000;
+    font-weight: bold;
   }
   #clickBtn:active {
-    background: #aaa;
+    border-top: 4px solid #404040;
+    border-left: 4px solid #404040;
+    border-right: 4px solid #fff;
+    border-bottom: 4px solid #fff;
+    background: #a0a0a0;
   }
   #score {
     text-align: center;
-    font-size: 22px;
-    margin: 10px 0;
+    font-size: 19px;
+    margin: 3px 0;
+    font-family: "Courier New", monospace;
+    background: #ffffcc;
+    border: 2px dashed #ff0000;
+    padding: 3px;
+    width: 190px;
+    margin-left: 11px;
   }
   .shop {
-    margin-top: 20px;
-    border-top: 2px solid #555;
-    padding-top: 10px;
+    margin-top: 9px;
+    border-top: 3px dotted #0000ff;
+    padding-top: 5px;
   }
   .shop h2 {
-    font-size: 18px;
-    margin: 5px 0;
+    font-size: 20px;
+    margin: 2px 0 2px 5px;
+    font-family: "Impact", sans-serif;
+    color: #008000;
+    text-decoration: underline;
   }
   .upgrade {
-    background: #bbb;
-    border: 2px solid #555;
-    padding: 8px;
-    margin: 6px 0;
+    background: #d4d0c8;
+    border-top: 3px solid #fff;
+    border-left: 3px solid #fff;
+    border-right: 3px solid #808080;
+    border-bottom: 3px solid #808080;
+    padding: 5px;
+    margin: 4px 0 4px 3px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
+    font-family: "Verdana", sans-serif;
+    width: 320px;
   }
   .upgrade:hover {
-    background: #aaa;
+    background: #ffff99;
   }
   .upgrade.disabled {
-    opacity: 0.5;
+    color: #808080;
+    background: #b0b0b0;
     cursor: not-allowed;
   }
   .tabs {
-    text-align: center;
-    margin-bottom: 15px;
+    text-align: left;
+    margin-bottom: 4px;
+    margin-left: 2px;
   }
   .tab {
     display: inline-block;
-    padding: 8px 16px;
-    background: #bbb;
-    border: 2px solid #555;
+    padding: 3px 7px 2px 7px;
+    background: #d4d0c8;
+    border-top: 3px solid #fff;
+    border-left: 3px solid #fff;
+    border-right: 3px solid #404040;
+    border-bottom: 3px solid #404040;
     cursor: pointer;
-    margin: 0 4px 4px 4px;
-    font-size: 14px;
+    margin: 0 2px 2px 0;
+    font-size: 12px;
+    font-family: "Verdana", sans-serif;
   }
   .tab.active {
-    background: #ddd;
+    background: #ffff00;
     font-weight: bold;
+    border-top: 3px solid #404040;
+    border-left: 3px solid #404040;
+    border-right: 3px solid #fff;
+    border-bottom: 3px solid #fff;
   }
   .page {
     display: none;
@@ -87,36 +127,52 @@
     display: block;
   }
   #chatBox {
-    background: #ddd;
-    border: 2px solid #555;
-    height: 200px;
+    background: #ffffff;
+    border: 3px inset #808080;
+    height: 187px;
     overflow-y: auto;
-    padding: 8px;
-    font-size: 14px;
-    margin-bottom: 8px;
+    padding: 4px;
+    font-size: 13px;
+    font-family: "Courier New", monospace;
+    margin-bottom: 4px;
+    width: 420px;
   }
   #chatInput {
-    width: 70%;
-    padding: 8px;
-    border: 2px solid #555;
-    font-size: 14px;
+    width: 283px;
+    padding: 3px;
+    border: 3px inset #808080;
+    font-size: 13px;
+    font-family: "Courier New", monospace;
+    background: #ffffcc;
   }
   #sendBtn {
-    padding: 8px 14px;
-    border: 2px solid #555;
-    background: #ccc;
+    padding: 3px 9px;
+    border-top: 3px solid #fff;
+    border-left: 3px solid #fff;
+    border-right: 3px solid #404040;
+    border-bottom: 3px solid #404040;
+    background: #d4d0c8;
     cursor: pointer;
+    font-family: "Comic Sans MS", cursive;
+    font-size: 12px;
+  }
+  #sendBtn:active {
+    border-top: 3px solid #404040;
+    border-left: 3px solid #404040;
+    border-right: 3px solid #fff;
+    border-bottom: 3px solid #fff;
   }
   #toast {
     position: fixed;
-    bottom: 20px;
+    bottom: 13px;
     left: 50%;
     transform: translateX(-50%) translateY(100px);
-    background: #333;
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 4px;
-    font-size: 15px;
+    background: #000080;
+    color: #ffff00;
+    padding: 7px 13px;
+    border: 3px outset #c0c0c0;
+    font-size: 14px;
+    font-family: "Comic Sans MS", cursive;
     opacity: 0;
     transition: all 0.4s;
     z-index: 999;
@@ -126,16 +182,25 @@
     opacity: 1;
   }
   .update-text {
-    background: #bbb;
-    border: 2px solid #555;
-    padding: 12px;
-    margin: 10px 0;
+    background: #ffffcc;
+    border: 2px dashed #ff00ff;
+    padding: 6px;
+    margin: 5px 0 5px 4px;
+    font-size: 13px;
+    font-family: "Times New Roman", serif;
+    width: 400px;
+    line-height: 1.4;
+  }
+  marquee {
+    font-family: "Comic Sans MS", cursive;
+    color: #ff0000;
     font-size: 15px;
-    line-height: 1.5;
   }
 </style>
 </head>
 <body>
+
+<marquee>*** КЛИКЕР СУПЕР МЕГА 2026 *** ЛУЧШИЙ КЛИКЕР В ИНТЕРНЕТЕ ***</marquee>
 
 <div class="container">
   <div class="tabs">
@@ -146,12 +211,12 @@
 
   <!-- КЛИКЕР -->
   <div class="page active" id="page-clicker">
-    <h1>Кликер</h1>
+    <h1>КЛИКЕР</h1>
     <div id="score">Счёт: 0</div>
-    <button id="clickBtn">КЛИК</button>
+    <button id="clickBtn">КЛИК!!!</button>
 
     <div class="shop">
-      <h2>Магазин</h2>
+      <h2>МАГАЗИН</h2>
       <div class="upgrade" id="up1">Улучшение 1: +1 за клик (цена: 10)</div>
       <div class="upgrade" id="up2">Улучшение 2: +5 за клик (цена: 100)</div>
       <div class="upgrade" id="up3">Улучшение 3: +25 за клик (цена: 1000)</div>
@@ -160,7 +225,7 @@
 
   <!-- ИИ -->
   <div class="page" id="page-ai">
-    <h1>ИИ фри 24 часа</h1>
+    <h1>ИИ ФРИ 24 ЧАСА</h1>
     <div id="chatBox"></div>
     <input id="chatInput" placeholder="веди че нибудь">
     <button id="sendBtn">Отправить</button>
@@ -168,7 +233,7 @@
 
   <!-- ОБНОВЛЕНИЕ -->
   <div class="page" id="page-update">
-    <h1>Обновление</h1>
+    <h1>ОБНОВЛЕНИЕ</h1>
     <div class="update-text">
       zuper team сделали эту фигню 11.10.2026 холодно на улице
     </div>
@@ -190,7 +255,7 @@
   const clickBtn = document.getElementById('clickBtn');
   const toast = document.getElementById('toast');
 
-  // Аудио через Web Audio API — никаких внешних файлов не надо
+  // Аудио через Web Audio API
   let audioCtx = null;
   function playClickSound() {
     try {
